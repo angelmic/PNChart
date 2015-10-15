@@ -326,6 +326,9 @@
 
 - (void)strokeChart
 {
+    _chartPath = [[NSMutableArray alloc] init];
+    _pointPath = [[NSMutableArray alloc] init];
+    _gradeStringPaths = [NSMutableArray array];
 
     [self calculateChartPath:_chartPath andPointsPath:_pointPath andPathKeyPoints:_pathPoints andPathStartEndPoints:_endPointsOfPath];
     // Draw each line
@@ -421,7 +424,7 @@
             } else {
                 innerGrade = (yValue - _yValueMin) / (_yValueMax - _yValueMin);
             }
-            
+             
             int x = i *  _xLabelWidth + _chartMarginLeft + _xLabelWidth /2.0;
             CGFloat offSetX = (_chartCavanWidth) / (chartData.itemCount);
 
@@ -777,6 +780,7 @@
     self.backgroundColor = [UIColor whiteColor];
     self.clipsToBounds   = YES;
     self.chartLineArray  = [NSMutableArray new];
+    self.chartPointArray = [NSMutableArray new]; // Gevin added, did not find init
     _showLabel            = YES;
     _showGenYLabels        = YES;
     _pathPoints          = [[NSMutableArray alloc] init];
