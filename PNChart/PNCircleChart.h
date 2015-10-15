@@ -21,7 +21,7 @@ typedef NS_ENUM (NSUInteger, PNChartFormatType) {
 #define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
 
 @interface PNCircleChart : UIView
-
+- (void)initCircle; // Gevin added
 - (void)strokeChart;
 - (void)growChartByAmount:(NSNumber *)growAmount;
 - (void)updateChartByCurrent:(NSNumber *)current;
@@ -63,7 +63,9 @@ displayCountingLabel:(BOOL)displayCountingLabel
 @property (nonatomic) NSNumber *lineWidth;
 @property (nonatomic) NSTimeInterval duration;
 @property (nonatomic) PNChartFormatType chartType;
-
+@property (nonatomic) BOOL clockwise; // Gevin added
+@property (nonatomic) BOOL hasBackgroundShadow; // Gevin added
+@property (nonatomic) UIColor* backgroundShadowColor; // Gevin added
 
 @property (nonatomic) CAShapeLayer *circle;
 @property (nonatomic) CAShapeLayer *gradientMask;

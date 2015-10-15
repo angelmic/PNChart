@@ -83,6 +83,11 @@ displayCountingLabel:(BOOL)displayCountingLabel
                                                                 endAngle:DEGREES_TO_RADIANS(endAngle)
                                                                clockwise:clockwise];
 
+        // Gevin added
+        _clockwise = clockwise;
+        _hasBackgroundShadow = hasBackgroundShadow;
+        _backgroundShadowColor = backgroundShadowColor;
+        
         _circle               = [CAShapeLayer layer];
         _circle.path          = circlePath.CGPath;
         _circle.lineCap       = kCALineCapRound;
@@ -99,16 +104,10 @@ displayCountingLabel:(BOOL)displayCountingLabel
         _circleBackground.strokeEnd   = 1.0;
         _circleBackground.zPosition   = -1;
 
+        _circleBackground     = [CAShapeLayer layer];
+        _countingLabel = [[UICountingLabel alloc] initWithFrame:CGRectMake(0, 0, 100.0, 50.0)];
         [self.layer addSublayer:_circle];
         [self.layer addSublayer:_circleBackground];
-
-        _countingLabel = [[UICountingLabel alloc] initWithFrame:CGRectMake(0, 0, 100.0, 50.0)];
-        [_countingLabel setTextAlignment:NSTextAlignmentCenter];
-        [_countingLabel setFont:[UIFont boldSystemFontOfSize:16.0f]];
-        [_countingLabel setTextColor:[UIColor grayColor]];
-        [_countingLabel setBackgroundColor:[UIColor clearColor]];
-        [_countingLabel setCenter:CGPointMake(self.frame.size.width/2.0f, self.frame.size.height/2.0f)];
-        _countingLabel.method = UILabelCountingMethodEaseInOut;
         if (_displayCountingLabel) {
             [self addSubview:_countingLabel];
         }
@@ -117,6 +116,48 @@ displayCountingLabel:(BOOL)displayCountingLabel
     return self;
 }
 
+// Gevin added
+-(void)initCircle{
+    
+    CGFloat startAngle = _clockwise ? -90.0f : 270.0f;
+    CGFloat endAngle = _clockwise ? -90.01f : 270.01f;
+
+    UIBezierPath *circlePath = [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.frame.size.width/2.0f, self.frame.size.height/2.0f)
+                                                              radius:(self.frame.size.height * 0.5) - ([_lineWidth floatValue]/2.0f)
+                                                          startAngle:DEGREES_TO_RADIANS(startAngle)
+                                                            endAngle:DEGREES_TO_RADIANS(endAngle)
+                                                           clockwise:_clockwise];
+    
+//    _circle               = [CAShapeLayer layer];
+    _circle.path          = circlePath.CGPath;
+    _circle.lineCap       = kCALineCapRound;
+    _circle.fillColor     = [UIColor clearColor].CGColor;
+    _circle.lineWidth     = [_lineWidth floatValue];
+    _circle.zPosition     = 1;
+    
+//    _circleBackground             = [CAShapeLayer layer];
+    _circleBackground.path        = circlePath.CGPath;
+    _circleBackground.lineCap     = kCALineCapRound;
+    _circleBackground.fillColor   = [UIColor clearColor].CGColor;
+    _circleBackground.lineWidth   = [_lineWidth floatValue];
+    _circleBackground.strokeColor = (_hasBackgroundShadow ? _backgroundShadowColor.CGColor : [UIColor clearColor].CGColor);
+    _circleBackground.strokeEnd   = 1.0;
+    _circleBackground.zPosition   = -1;
+    
+//    [self.layer addSublayer:_circle];
+//    [self.layer addSublayer:_circleBackground];
+    
+//    _countingLabel = [[UICountingLabel alloc] initWithFrame:CGRectMake(0, 0, 100.0, 50.0)];
+    [_countingLabel setTextAlignment:NSTextAlignmentCenter];
+    [_countingLabel setFont:[UIFont boldSystemFontOfSize:16.0f]];
+    [_countingLabel setTextColor:[UIColor grayColor]];
+    [_countingLabel setBackgroundColor:[UIColor clearColor]];
+    [_countingLabel setCenter:CGPointMake(self.frame.size.width/2.0f, self.frame.size.height/2.0f)];
+    _countingLabel.method = UILabelCountingMethodEaseInOut;
+//    if (_displayCountingLabel) {
+//        [self addSubview:_countingLabel];
+//    }
+}
 
 - (void)strokeChart
 {
@@ -164,7 +205,6 @@ displayCountingLabel:(BOOL)displayCountingLabel
     _circle.strokeEnd   = [_current floatValue] / [_total floatValue];
 
     [_countingLabel countFrom:0 to:[_current floatValue]/([_total floatValue]/100.0) withDuration:self.duration];
-
 
     // Check if user wants to add a gradient from the start color to the bar color
     if (_strokeColorGradientStart) {
@@ -234,7 +274,7 @@ displayCountingLabel:(BOOL)displayCountingLabel
     [_circle addAnimation:pathAnimation forKey:@"strokeEndAnimation"];
     
     if (_displayCountingLabel) {
-        [self.countingLabel countFrom:fmin([_current floatValue], [_total floatValue]) to:[current floatValue]/([total floatValue]/100.0) withDuration:self.duration];
+        [self.countingLabel countFrom:fmin([_current floatValue], [_total floatValue]) to:fmin([current floatValue], [total floatValue]) withDuration:self.duration];
     }
     
     _current = current;
