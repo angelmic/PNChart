@@ -617,7 +617,6 @@
         }
     }
     
-    
     // Min value for Y label
     if (yMax < 5) {
         yMax = 5.0f;
@@ -1032,36 +1031,38 @@
 
 #pragma mark setter and getter
 
--(CATextLayer*)createTextLayer
+-(CATextLayer*) createPointLabelFor:(CGFloat)grade pointCenter:(CGPoint)pointCenter width:(CGFloat)width withChartData:(PNLineChartData*)chartData
 {
-    CATextLayer * textLayer = [[CATextLayer alloc]init];
-    [textLayer setString:@"0"];
+    CATextLayer *textLayer = [[CATextLayer alloc]init];
     [textLayer setAlignmentMode:kCAAlignmentCenter];
-    [textLayer setForegroundColor:[[UIColor blackColor] CGColor]];
-    return textLayer;
-}
-
--(void)setGradeFrame:(CATextLayer*)textLayer grade:(CGFloat)grade pointCenter:(CGPoint)pointCenter width:(CGFloat)width
-{
-    CGFloat textheigt = width*3;
+    [textLayer setForegroundColor:[chartData.pointLabelColor CGColor]];
+    [textLayer setBackgroundColor:[[[UIColor whiteColor] colorWithAlphaComponent:0.8] CGColor]];
+    [textLayer setCornerRadius:textLayer.fontSize/8.0];
+    
+    if (chartData.pointLabelFont != nil) {
+        [textLayer setFont:(__bridge CFTypeRef)(chartData.pointLabelFont)];
+        textLayer.fontSize = [chartData.pointLabelFont pointSize];
+    }
+    
+    CGFloat textHeight = textLayer.fontSize * 1.1;
     CGFloat textWidth = width*8;
     CGFloat textStartPosY;
     
-    if (pointCenter.y > textheigt) {
-        textStartPosY = pointCenter.y - textheigt;
-    }
-    else {
-        textStartPosY = pointCenter.y;
-    }
-    
+    textStartPosY = pointCenter.y - textLayer.fontSize;
+
     [self.layer addSublayer:textLayer];
-    [textLayer setFontSize:textheigt/2];
     
-    [textLayer setString:[[NSString alloc]initWithFormat:@"%ld",(NSInteger)(grade*100)]];
-    [textLayer setFrame:CGRectMake(0, 0, textWidth,  textheigt)];
+    if (chartData.pointLabelFormat != nil) {
+        [textLayer setString:[[NSString alloc]initWithFormat:chartData.pointLabelFormat, grade]];
+    } else {
+        [textLayer setString:[[NSString alloc]initWithFormat:_yLabelFormat, grade]];
+    }
+    
+    [textLayer setFrame:CGRectMake(0, 0, textWidth,  textHeight)];
     [textLayer setPosition:CGPointMake(pointCenter.x, textStartPosY)];
     textLayer.contentsScale = [UIScreen mainScreen].scale;
 
+    return textLayer;
 }
 
 -(CABasicAnimation*)fadeAnimation
