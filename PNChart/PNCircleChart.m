@@ -12,6 +12,9 @@
 @end
 
 @implementation PNCircleChart
+{
+    CAGradientLayer *gradientLayer;
+}
 
 - (id)initWithFrame:(CGRect)frame total:(NSNumber *)total current:(NSNumber *)current clockwise:(BOOL)clockwise {
     
@@ -210,7 +213,13 @@ displayCountingLabel:(BOOL)displayCountingLabel
     if (_strokeColorGradientStart) {
 
         // Add gradient
-        self.gradientMask = [CAShapeLayer layer];
+        if ( !self.gradientMask ) {
+            self.gradientMask = [CAShapeLayer layer];
+            gradientLayer = [CAGradientLayer layer];
+            [gradientLayer setMask:self.gradientMask];
+            [_circle addSublayer:gradientLayer];
+        }
+        [self.gradientMask removeAllAnimations];
         self.gradientMask.fillColor = [[UIColor clearColor] CGColor];
         self.gradientMask.strokeColor = [[UIColor blackColor] CGColor];
         self.gradientMask.lineWidth = _circle.lineWidth;
@@ -218,8 +227,7 @@ displayCountingLabel:(BOOL)displayCountingLabel
         CGRect gradientFrame = CGRectMake(0, 0, 2*self.bounds.size.width, 2*self.bounds.size.height);
         self.gradientMask.frame = gradientFrame;
         self.gradientMask.path = _circle.path;
-
-        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+        
         gradientLayer.startPoint = CGPointMake(0.5,1.0);
         gradientLayer.endPoint = CGPointMake(0.5,0.0);
         gradientLayer.frame = gradientFrame;
@@ -229,13 +237,7 @@ displayCountingLabel:(BOOL)displayCountingLabel
                             (id)_strokeColorGradientStart.CGColor
                             ];
         gradientLayer.colors = colors;
-
-        [gradientLayer setMask:self.gradientMask];
-
-        [_circle addSublayer:gradientLayer];
-
         self.gradientMask.strokeEnd = [_current floatValue] / [_total floatValue];
-
         [self.gradientMask addAnimation:pathAnimation forKey:@"strokeEndAnimation"];
     }
 }

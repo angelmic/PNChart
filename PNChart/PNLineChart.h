@@ -45,6 +45,10 @@
 @property (nonatomic) UIColor *yLabelColor;
 @property (nonatomic) CGFloat chartCavanHeight;
 @property (nonatomic) CGFloat chartCavanWidth;
+@property (nonatomic) CGPoint chartCavanOrigin; // Gevin added 軸線的原點
+@property (nonatomic) CGPoint chartStrokeOffset; // Gevin added 圖表的偏移
+@property (nonatomic) CGFloat xSeparateInterval; // Gevin added 圖表的偏移
+
 @property (nonatomic) BOOL showLabel;
 @property (nonatomic) BOOL showGenYLabels;
 @property (nonatomic) BOOL thousandsSeparator;
