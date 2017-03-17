@@ -39,18 +39,16 @@
 @property (nonatomic) CGFloat yFixedValueMax;
 @property (nonatomic) CGFloat yFixedValueMin;
 @property (nonatomic) CGFloat yValueMin;
-@property (nonatomic) NSInteger yLabelNum;
+@property (nonatomic) NSInteger yStepNum;
 @property (nonatomic) CGFloat yLabelHeight;
 @property (nonatomic) UIFont *yLabelFont;
 @property (nonatomic) UIColor *yLabelColor;
 @property (nonatomic) CGFloat chartCavanHeight;
 @property (nonatomic) CGFloat chartCavanWidth;
-@property (nonatomic) CGPoint chartCavanOrigin; // Gevin added 軸線的原點
-@property (nonatomic) CGPoint chartStrokeOffset; // Gevin added 圖表的偏移
-@property (nonatomic) CGFloat xSeparateInterval; // Gevin added 圖表的偏移
-
 @property (nonatomic) BOOL showLabel;
 @property (nonatomic) BOOL showGenYLabels;
+@property (nonatomic) BOOL showYGridLines;
+@property (nonatomic) UIColor *yGridLinesColor;
 @property (nonatomic) BOOL thousandsSeparator;
 
 @property (nonatomic) CGFloat chartMarginLeft;
@@ -78,6 +76,12 @@
  */
 @property (nonatomic, copy) NSString* (^yLabelBlockFormatter)(CGFloat);
 
+
+/**
+ * Controls whether to curve the line chart or not
+ */
+@property (nonatomic) BOOL showSmoothLines;
+
 - (void)setXLabels:(NSArray *)xLabels withWidth:(CGFloat)width;
 
 /**
@@ -99,4 +103,8 @@
 
 
 + (CGSize)sizeOfString:(NSString *)text withWidth:(float)width font:(UIFont *)font;
+
++ (CGPoint)midPointBetweenPoint1:(CGPoint)point1 andPoint2:(CGPoint)point2;
++ (CGPoint)controlPointBetweenPoint1:(CGPoint)point1 andPoint2:(CGPoint)point2;
+
 @end
