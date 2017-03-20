@@ -133,6 +133,7 @@
         for (PNChartLabel *label in _yChartLabels) {
             [label removeFromSuperview];
         }
+        [_yChartLabels removeAllObjects];
     } else {
         _yChartLabels = [NSMutableArray new];
     }
@@ -190,6 +191,7 @@
         for (PNChartLabel *label in _xChartLabels) {
             [label removeFromSuperview];
         }
+        [_xChartLabels removeAllObjects];
     } else {
         _xChartLabels = [NSMutableArray new];
     }
